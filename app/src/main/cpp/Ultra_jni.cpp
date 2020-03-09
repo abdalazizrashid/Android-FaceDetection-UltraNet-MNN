@@ -39,14 +39,14 @@ Java_com_facesdk_FaceSDKNative_FaceDetectionModelInit(JNIEnv *env, jobject insta
     string tFaceModelDir = faceDetectionModelPath;
     string tLastChar = tFaceModelDir.substr(tFaceModelDir.length()-1, 1);
     //RFB-320
-    //RFB-320-quant-ADMM-320
+    //RFB-320-quant-ADMM-32
     //RFB-320-quant-KL-5792
     //slim-320
     //slim-320-quant-ADMM-50
     // change names
-    string str = tFaceModelDir + "RFB-320.mnn";
+    string str = tFaceModelDir + "RFB-320-quant-ADMM-32.mnn";
 
-    ultra = new  UltraFace(str, 320, 240, 4, 0.65 ); // config model input
+    ultra = new  UltraFace(str, 320, 240, 8, 0.99 ); // config model input
 
     env->ReleaseStringUTFChars(faceDetectionModelPath_, faceDetectionModelPath);
     detection_sdk_init_ok = true;
@@ -107,9 +107,13 @@ Java_com_facesdk_FaceSDKNative_FaceDetect(JNIEnv *env, jobject instance, jbyteAr
 
     int out_size = 1+num_face*9;
     int *allfaceInfo = new int[out_size];
-    allfaceInfo[0] = num_face;
-    for (int i=0; i<num_face; i++) {
 
+    allfaceInfo[0] = num_face;
+    if (allfaceInfo[0] != 0){
+        num_face = 1;
+    }
+
+    for (int i=0; i<num_face; ++i) {
         allfaceInfo[9*i+1] = face_info[i].x1;//left
         allfaceInfo[9*i+2] = face_info[i].y1;//top
         allfaceInfo[9*i+3] = face_info[i].x2;//right
